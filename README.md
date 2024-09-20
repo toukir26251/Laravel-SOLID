@@ -1,66 +1,41 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel SOLID Payment System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository demonstrates a basic structure for an order and payment system using Laravel, following SOLID principles. This is a boilerplate implementation with no business logic, focused on adhering to a clean architecture and maintainable code.
 
-## About Laravel
+## Understanding SOLID
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+SOLID is an acronym that represents five principles of object-oriented programming and design:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Single Responsibility Principle (SRP)** - Each class should have only one responsibility or reason to change.
+2. **Open/Closed Principle (OCP)** - Classes should be open for extension but closed for modification.
+3. **Liskov Substitution Principle (LSP)** - Subtypes should be substitutable for their base types without altering the correctness of the program.
+4. **Interface Segregation Principle (ISP)** - Clients should not be forced to depend on methods they do not use.
+5. **Dependency Inversion Principle (DIP)** - High-level modules should not depend on low-level modules, but both should depend on abstractions.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Project Structure
 
-## Learning Laravel
+This project implements a basic payment flow, with the following routes and structure:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Routes
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **`GET /payment-amount/{orderId?}`**: Fetches the payment amount for a given order.
+- **`GET /payment-gateway-link/{orderId?}/{gatewayId?}`**: Generates a link to the selected payment gateway for the given order.
+- **`GET /payment-verification/{orderId?}`**: Verifies the payment status for the given order.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+These routes are defined in `web.php` and handled by the `PaymentController`.
 
-## Laravel Sponsors
+### Controller
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+The `PaymentController` manages the payment process. It interacts with the following repositories and services:
 
-### Premium Partners
+- **`PaymentRepository`**: Implements `PaymentRepositoryInterface`. This repository is responsible for interacting with multiple payment gateways.
+- **`StripePaymentRepository`** & **`PaypanPaymentRepository`**: Both implement `PaymentGatewayRepositoryInterface` as they handle similar tasks: generating payment URLs, taking payments, and validating them.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Services
 
-## Contributing
+- **`OrderService`**: Handles order-specific logic.
+- **`PaymentService`**: Manages payment-related operations. All logical operations are broken down into single responsibility services to keep the code clean and modular.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Repositories
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+All service classes are used within the repository classes to adhere to the **Single Responsibility Principle**. This allows for each part of the application to focus on one aspect, while also making it easier to test and extend in the future.
